@@ -47,5 +47,6 @@ if(minha_figura.tipo == CIRCULO){
     printf("De raio: %.2f\n", ptr_circulo_dados->raio);
 }
 
+
     return 0;
 }
