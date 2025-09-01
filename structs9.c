@@ -22,7 +22,7 @@ buscar um produto pelo seu nome.
 */
 
 typedef enum{
-    SMARTPHONE, NOTEBOOK,  TELEVISOR,
+    SMARTPHONE, NOTEBOOK, TELEVISOR,
 } tipo_produto;
 
 typedef struct{
@@ -45,52 +45,68 @@ void printProduto(produto p);
 void cadastrarProduto(produto **p, int *n);
 void exibirProdutos(produto *p, int qtd_produtos);
 void buscarProduto(produto *p, char *nome, int qtd_produtos);
-
+void voltarAoMenu();
 
 int main(){
     int qtd_produtos = 0;
     produto *produtos = NULL;
     int menu = 0;
+    int encerrar = 0;
     char resposta = 's';
 
     char busca[20];
 
-    
-
-    do{
+    while(encerrar == 0){
+        //system("cls || clear");
         printf("\t=====================\n\t\tMENU\n\t=====================\n");
         printf("\t1. Cadastrar produto\n\t2. Buscar produto\n\t3. Listar produtos\n\t4. Encerrar\n");
         printf("\t=====================\n\t=====================\n");
         scanf("%d", &menu);
-    if(menu == 1){
-    while(resposta == 'S' || resposta == 's'){
-    cadastrarProduto(&produtos, &qtd_produtos);
-    printf("\ndeseja cadastrar mais produtos?\n");
-    scanf(" %c", &resposta);
-        } 
-    } else if(menu == 2){
-        printf("digite o nome do produto que deseja buscar:\n");
-        fgets(busca, 20, stdin);
-        busca[strcspn(busca, "\n")] = '\0';
-        buscarProduto(produtos, busca, qtd_produtos);
-        } else if(menu == 3){
+    switch (menu){
+        case 1: 
+            do{
+            cadastrarProduto(&produtos, &qtd_produtos);
+            printf("\ndeseja cadastrar mais produtos?\n");
+            scanf(" %c", &resposta);
+            }while(resposta == 'S' || resposta == 's');
+            voltarAoMenu();
+            break;
+        case 2:
+            printf("digite o nome do produto que deseja buscar:\n");
+            getchar();
+            fgets(busca, 20, stdin);
+            busca[strcspn(busca, "\n")] = '\0';
+            buscarProduto(produtos, busca, qtd_produtos);
+            voltarAoMenu();
+            break;
+        case 3:
             exibirProdutos(produtos, qtd_produtos);
-            }
-    }while(menu != 4);
+            voltarAoMenu();
+            break;
+        case 4:
+            encerrar = 1;
+            break;
+        default:
+            printf("opcao invalida");
+        }
+    };
+            
 
- free(produtos);
-    return 0;
-}
+     free(produtos);
+     return 0;
+    }
 
 void buscarProduto(produto *p, char *nome, int qtd_produtos){
     int j;
-    for(int i = 0; i < qtd_produtos ; i++){
+    int i;
+    for(i = 0; i < qtd_produtos ; i++){
         if (strcmp(nome, p[i].info.nome) == 0){
             j = i;
-        } 
+            break;
+        }
+    }
     printProduto(p[i]);
     }
-}
 
 void printProduto(produto p){
     
@@ -160,6 +176,7 @@ void cadastrarProduto(produto **p, int *qtd_produtos){
         case TELEVISOR:
             printf("digite o tamanho da tela do televisor: \n");
             scanf("%f", &novo->info_espec1.tamanho_tela);
+            getchar();
             printf("digite a resolucao (HD, Full HD, 4K) do televisor:  \n");
             fgets(novo->info_espec2.resolucao, 8, stdin);
             novo->info_espec2.resolucao[strcspn(novo->info_espec2.resolucao, "\n")] = '\0';
@@ -181,4 +198,10 @@ void exibirProdutos(produto *p, int qtd_produtos){
     for(int i = 0; i < qtd_produtos; i++){
         printProduto(p[i]);
     }
+}
+
+void voltarAoMenu(){
+    printf("Pressione Enter para voltar ao menu...");
+    getchar(); // para consumir o '\n' pendente, se necessário
+    getchar(); // espera o Enter do usuário
 }
