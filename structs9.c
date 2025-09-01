@@ -20,6 +20,7 @@ c) Crie um programa que
 permita ao usuário cadastrar produtos na loja, imprimir na tela os produtos cadastrados e
 buscar um produto pelo seu nome.
 */
+
 typedef enum{
     SMARTPHONE, NOTEBOOK,  TELEVISOR,
 } tipo_produto;
@@ -43,28 +44,53 @@ typedef struct{
 void printProduto(produto p);
 void cadastrarProduto(produto **p, int *n);
 void exibirProdutos(produto *p, int qtd_produtos);
+void buscarProduto(produto *p, char *nome, int qtd_produtos);
 
 
 int main(){
     int qtd_produtos = 0;
     produto *produtos = NULL;
+    int menu = 0;
     char resposta = 's';
 
+    char busca[20];
+
+    
+
+    do{
+        printf("\t=====================\n\t\tMENU\n\t=====================\n");
+        printf("\t1. Cadastrar produto\n\t2. Buscar produto\n\t3. Listar produtos\n\t4. Encerrar\n");
+        printf("\t=====================\n\t=====================\n");
+        scanf("%d", &menu);
+    if(menu == 1){
     while(resposta == 'S' || resposta == 's'){
     cadastrarProduto(&produtos, &qtd_produtos);
     printf("\ndeseja cadastrar mais produtos?\n");
     scanf(" %c", &resposta);
-    } 
-
-    printf("nome do segundo produto %s\n", produtos[1].info.nome);
-    printf("qtd de produtos %d\n", qtd_produtos);
-    exibirProdutos(produtos, qtd_produtos);
+        } 
+    } else if(menu == 2){
+        printf("digite o nome do produto que deseja buscar:\n");
+        fgets(busca, 20, stdin);
+        busca[strcspn(busca, "\n")] = '\0';
+        buscarProduto(produtos, busca, qtd_produtos);
+        } else if(menu == 3){
+            exibirProdutos(produtos, qtd_produtos);
+            }
+    }while(menu != 4);
 
  free(produtos);
     return 0;
 }
 
-
+void buscarProduto(produto *p, char *nome, int qtd_produtos){
+    int j;
+    for(int i = 0; i < qtd_produtos ; i++){
+        if (strcmp(nome, p[i].info.nome) == 0){
+            j = i;
+        } 
+    printProduto(p[i]);
+    }
+}
 
 void printProduto(produto p){
     
@@ -87,7 +113,7 @@ void printProduto(produto p){
 
 void cadastrarProduto(produto **p, int *qtd_produtos){
     char categoria[12];
-    produto *ptr_produto = (produto *)realloc(*p, *qtd_produtos + 1 * sizeof(produto));
+    produto *ptr_produto = (produto *)realloc(*p, *qtd_produtos + 1 * sizeof(produto)); // aloca mais um espaço para o novo produto no array
     if(ptr_produto == NULL){
         printf("memoria nao foi alocada corretamente!");
         free(*p);
