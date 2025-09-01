@@ -41,7 +41,8 @@ typedef struct{
 } produto;
 
 void printProduto(produto p);
-void cadastrarProduto(produto *p, int *n);
+void cadastrarProduto(produto **p, int *n);
+void exibirProdutos(produto *p, int qtd_produtos);
 
 
 int main(){
@@ -50,12 +51,14 @@ int main(){
     char resposta = 's';
 
     while(resposta == 'S' || resposta == 's'){
-    cadastrarProduto(produtos, &qtd_produtos);
+    cadastrarProduto(&produtos, &qtd_produtos);
     printf("\ndeseja cadastrar mais produtos?\n");
     scanf(" %c", &resposta);
     } 
 
-    printf("cabou");
+    printf("nome do segundo produto %s\n", produtos[1].info.nome);
+    printf("qtd de produtos %d\n", qtd_produtos);
+    exibirProdutos(produtos, qtd_produtos);
 
  free(produtos);
     return 0;
@@ -82,62 +85,74 @@ void printProduto(produto p){
     }
 }
 
-void cadastrarProduto(produto *p, int *qtd_produtos){
+void cadastrarProduto(produto **p, int *qtd_produtos){
     char categoria[12];
-    produto *ptr_produto = (produto *)realloc(p, *qtd_produtos + 1 * sizeof(produto));
+    produto *ptr_produto = (produto *)realloc(*p, *qtd_produtos + 1 * sizeof(produto));
     if(ptr_produto == NULL){
         printf("memoria nao foi alocada corretamente!");
-        free(p);
+        free(*p);
+        exit(1);
     }
 
-    p = ptr_produto;
+    *p = ptr_produto;
+    produto *novo = &((*p)[*qtd_produtos]);
 
     printf("digite a categoria do produto: \n");
     scanf("%s", categoria);
     if(strcmp(categoria, "smartphone") == 0){
-        p->tipo = SMARTPHONE;
+        novo->tipo = SMARTPHONE;
         } else if(strcmp(categoria, "notebook") == 0){
-            p->tipo = NOTEBOOK;
+            novo->tipo = NOTEBOOK;
             } else if(strcmp(categoria, "televisor") == 0){
-                p->tipo = TELEVISOR;
+                novo->tipo = TELEVISOR;
                 }
     getchar();
     printf("digite o nome do produto: \n");
-        fgets(p->info.nome, 50, stdin);
-        p->info.nome[strcspn(p->info.nome, "\n")] = '\0'; // tira o \n da string (tava atrapalhando no output)
+        fgets(novo->info.nome, 50, stdin);
+        novo->info.nome[strcspn(novo->info.nome, "\n")] = '\0'; // tira o \n da string (tava atrapalhando no output)
     printf("digite a marca do produto: \n");
-        fgets(p->info.marca, 10, stdin);
-        p->info.marca[strcspn(p->info.marca, "\n")] = '\0'; 
+        fgets(novo->info.marca, 10, stdin);
+        novo->info.marca[strcspn(novo->info.marca, "\n")] = '\0'; 
     printf("digite o modelo do produto: \n");
-        fgets(p->info.modelo, 10, stdin);
-        p->info.modelo[strcspn(p->info.modelo, "\n")] = '\0';
+        fgets(novo->info.modelo, 10, stdin);
+        novo->info.modelo[strcspn(novo->info.modelo, "\n")] = '\0';
 
-    switch(p->tipo){
+    switch(novo->tipo){
         case SMARTPHONE:
             printf("digite o sistema operacional do smartphone: \n");
-            fgets(p->info_espec1.so, 8, stdin);
+            fgets(novo->info_espec1.so, 8, stdin);
+            novo->info_espec1.so[strcspn(novo->info_espec1.so, "\n")] = '\0';
             printf("digite o armazenamento do smartphone: \n");
-            scanf("%d", &p->info_espec2.memoria_ssd);
+            scanf("%d", &novo->info_espec2.memoria_ssd);
             break;
         case NOTEBOOK:
             printf("digite o tamanho da tela do notebook: \n");
-            scanf("%f", &p->info_espec1.tamanho_tela);
+            scanf("%f", &novo->info_espec1.tamanho_tela);
             printf("digite a quantidade de RAM de do notebook: \n");
-            scanf("%d", &p->info_espec2.memoria_ram);
+            scanf("%d", &novo->info_espec2.memoria_ram);
             break;
         case TELEVISOR:
             printf("digite o tamanho da tela do televisor: \n");
-            scanf("%f", &p->info_espec1.tamanho_tela);
+            scanf("%f", &novo->info_espec1.tamanho_tela);
             printf("digite a resolucao (HD, Full HD, 4K) do televisor:  \n");
-            fgets(p->info_espec2.resolucao, 8, stdin);
+            fgets(novo->info_espec2.resolucao, 8, stdin);
+            novo->info_espec2.resolucao[strcspn(novo->info_espec2.resolucao, "\n")] = '\0';
             break;
         default:
             break;
     }
 
-     qtd_produtos++;
+     (*qtd_produtos)++;
 
     printf("=== EXIBINDO PRODUTO CADASTRADO ===\n");
-    printProduto(*p);
+    printProduto(*novo);
     
+}
+
+void exibirProdutos(produto *p, int qtd_produtos){
+    printf("=================\nTODOS OS PRODUTOS\n=================\n");
+
+    for(int i = 0; i < qtd_produtos; i++){
+        printProduto(p[i]);
+    }
 }
