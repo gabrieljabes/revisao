@@ -25,6 +25,12 @@ typedef enum{
     SENIOR
 } nivel;
 
+typedef enum{
+    TIPO_CLT,
+    TIPO_PJ
+} tipo_contrato;
+
+
 typedef struct{
     float salario_bruto;
     float vale_comida;
@@ -46,19 +52,17 @@ typedef struct{
     int codigo_id;
     char nome[50];
     nivel nivel;
+    tipo_contrato tipo;
     contrato contrato;
     float salario_liquido;
 } funcionario;
 
-float salarioLiquido(funcionario *empregados);
+void salarioLiquido(funcionario *empregados, int qtd_empregados);
 void salarioMedioEmpresa(funcionario *empregados, int qtd_empregados);
 
 int main(){
-
     funcionario empregados[10];
-
-
-
+    
     return 0;
 }
 
@@ -67,15 +71,20 @@ void salarioMedioEmpresa(funcionario *empregados, int qtd_empregados){
     for(int i = 0; i < qtd_empregados; i++){
         salario_total+=empregados[i].salario_liquido;
     }
+
     salario_total /= qtd_empregados;
+    printf("salario medio da empresa eh: %.2f", salario_total);
 }
 
-float salarioLiquido(funcionario *empregados){
-    if(empregados->contrato.CLT.salario_bruto == -1){}
-}
-
-
-   
-
-
+void salarioLiquido(funcionario *empregados, int qtd_empregados){
+     for(int i = 0; i < qtd_empregados ; i++){
+    if(empregados[i].tipo == TIPO_CLT){
+            empregados[i].salario_liquido = empregados[i].contrato.CLT.salario_bruto * 0.8;
+            empregados[i].salario_liquido += empregados[i].contrato.CLT.vale_comida;
+            empregados[i].salario_liquido += empregados[i].contrato.CLT.vale_transp;
+        } else if(empregados->tipo == TIPO_PJ){
+                empregados[i].salario_liquido = empregados[i].contrato.PJ.horas_trabalho * empregados[i].contrato.PJ.valor_hora;
+                empregados[i].salario_liquido += empregados[i].contrato.PJ.valor_beneficio;
+         }
+    }
 }
