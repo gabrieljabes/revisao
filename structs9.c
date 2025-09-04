@@ -27,6 +27,7 @@ typedef enum{
 
 typedef struct{
     char nome[50], marca[10], modelo[10];
+    float preco;
 } info_produto;
 
 typedef union{
@@ -110,7 +111,7 @@ void buscarProduto(produto *p, char *nome, int qtd_produtos){
 
 void printProduto(produto p){
     
-    printf("\tMarca: %s\tNome: %s\tModelo: %s\t", p.info.marca, p.info.nome, p.info.modelo);
+    printf("\tMarca: %s\tNome: %s\tModelo: %s\tPreco: %.2f\n", p.info.marca, p.info.nome, p.info.modelo, p.info.preco);
     switch (p.tipo){
         case SMARTPHONE:
             printf("Sistema Operacional: %s\tArmazenamento: %d GB\t Categoria: SMARTPHONE\t\n", p.info_espec1.so, p.info_espec2.memoria_ssd);
@@ -158,6 +159,9 @@ void cadastrarProduto(produto **p, int *qtd_produtos){
     printf("digite o modelo do produto: \n");
         fgets(novo->info.modelo, 10, stdin);
         novo->info.modelo[strcspn(novo->info.modelo, "\n")] = '\0';
+    printf("digite o preco do produto: \n");
+        scanf(" %f", &novo->info.preco);
+        getchar();
 
     switch(novo->tipo){
         case SMARTPHONE:
@@ -165,19 +169,19 @@ void cadastrarProduto(produto **p, int *qtd_produtos){
             fgets(novo->info_espec1.so, 8, stdin);
             novo->info_espec1.so[strcspn(novo->info_espec1.so, "\n")] = '\0';
             printf("digite o armazenamento do smartphone: \n");
-            scanf("%d", &novo->info_espec2.memoria_ssd);
+            scanf(" %d", &novo->info_espec2.memoria_ssd);
             break;
         case NOTEBOOK:
             printf("digite o tamanho da tela do notebook: \n");
-            scanf("%f", &novo->info_espec1.tamanho_tela);
+            scanf(" %f", &novo->info_espec1.tamanho_tela);
             printf("digite a quantidade de RAM de do notebook: \n");
-            scanf("%d", &novo->info_espec2.memoria_ram);
+            scanf(" %d", &novo->info_espec2.memoria_ram);
             break;
         case TELEVISOR:
             printf("digite o tamanho da tela do televisor: \n");
-            scanf("%f", &novo->info_espec1.tamanho_tela);
+            scanf(" %f", &novo->info_espec1.tamanho_tela);
             getchar();
-            printf("digite a resolucao (HD, Full HD, 4K) do televisor:  \n");
+            printf("digite a resolucao (HD, Full HD, 4K) do televisor: \n");
             fgets(novo->info_espec2.resolucao, 8, stdin);
             novo->info_espec2.resolucao[strcspn(novo->info_espec2.resolucao, "\n")] = '\0';
             break;
